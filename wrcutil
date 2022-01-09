@@ -1,0 +1,53 @@
+#!/bin/zsh
+
+set -euo pipefail
+
+alias grep='grep --perl-regexp --line-regexp'
+
+function main {
+  cat /usr/share/dict/words \
+    | tr '[:upper:]' '[:lower:]' \
+    | grep "[a-z]{5}" \
+    | uniq \
+    | grep "$1"
+}
+
+
+if [[ "$#" -ne 1 ]]; then
+cat <<-EOF
+Specify a pattern as a PCRE! Hints:
+
+Use a . to match any letter:
+
+Use a letter on its own to pin it:
+  ....e
+
+  --> addie
+      adele
+      aggie
+      ...
+
+Use [...] to specify a range/group of letters:
+  [bc]...e
+  --> basie
+      beebe
+      ...
+      chase
+      ...
+
+Use [^...] to exclude letters:
+  [^a-g]...f:
+  --> idaho
+      julio
+      kongo
+      ...
+
+https://perldoc.perl.org/perlre for more
+
+Happy Wording!
+EOF
+
+exit
+fi
+
+main "$1"
